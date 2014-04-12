@@ -2,17 +2,6 @@ var imgPrev = (function() {
 
     var fileList = [],
         innerPreview, innerDropbox, innerNameList
-
-        deleteFileAndNamesFromQueue = function(index, nameElement) {
-            var closeIndex = nameElement.dataset.close;
-            deletePreview(closeIndex);
-            deleteName(index, nameElement)
-            console.log("closeIndex: ", closeIndex);
-            // fileList.splice(closeIndex, 1)
-            delete fileList[closeIndex];
-            console.warn("afterDeleting: ", fileList);
-        },
-
         initDropbox = function(dB) {
             if (dB) innerDropbox = dB;
         },
@@ -21,12 +10,25 @@ var imgPrev = (function() {
         },
         addPreview = function(fileIndex, file) {
             if (innerPreview) {
-                var img = document.createElement("img");
+                var img = document.createElement("img"),
+                    containerDiv = document.createElement("div"),
+                    nameElement = document.createElement("div"),
+                    close = document.createElement('span');
+                nameElement.innerHTML = file.name;
+                nameElement.classList.add('label');
+                nameElement.classList.add('label-default');
+                close.innerHTML = ' x ';
+                close.setAttribute("data-close", fileIndex);
+                close.classList.add("close-preview");
+                nameElement.appendChild(close);
                 img.classList.add("img-thumbnail");
                 img.file = file;
-                img.width = 200
+                img.width = 150;
                 img.setAttribute('data-i', fileIndex)
-                innerPreview.appendChild(img);
+                containerDiv.setAttribute("data-i", fileIndex);
+                containerDiv.appendChild(img);
+                containerDiv.appendChild(nameElement);
+                innerPreview.appendChild(containerDiv);
                 var reader = new FileReader();
                 reader.onload = (function(aImg) {
                     return function(e) {
@@ -34,36 +36,27 @@ var imgPrev = (function() {
                     };
                 })(img);
                 reader.readAsDataURL(file);
+                close.addEventListener('click', function(e) {
+                    deletePreviewAndFileFromQueue(fileIndex, e.target);
+                })
             }
         },
         deletePreview = function(i) {
-            var imgToRemove = document.querySelector("[data-i='" + i + "']")
-            imgToRemove.parentNode.removeChild(imgToRemove);
+            var blockToRemove = document.querySelector("[data-i='" + i + "']")
+            blockToRemove.parentNode.removeChild(blockToRemove);
         },
-        initNameList = function(nL) {
-            if (nL) innerNameList = nL;
-        },
-        addNameWithCloseButton = function(index, fileName) {
-            var element = document.createElement('div'),
-                close = document.createElement('span');
-            close.innerHTML = ' x ';
-            element.setAttribute("data-i", index);
-            close.setAttribute("data-close", index);
-            element.innerHTML = fileName;
-            element.appendChild(close);
-            innerNameList.appendChild(element);
-
-        },
-        deleteName = function(index, nameElement) {
-
-            var nameElementToRemove = nameElement.parentNode;
-            nameElementToRemove.parentNode.removeChild(nameElementToRemove)
+        deletePreviewAndFileFromQueue = function(index, nameElement) {
+            var closeIndex = nameElement.dataset.close;
+            deletePreview(closeIndex);
+            console.log("closeIndex: ", closeIndex);
+            // fileList.splice(closeIndex, 1)
+            delete fileList[closeIndex];
+            console.warn("afterDeleting: ", fileList);
         },
         dragenter = function(e) {
             e.stopPropagation();
             e.preventDefault();
         },
-
         dragover = function(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -87,7 +80,6 @@ var imgPrev = (function() {
                 return clearArray;
             } else return null;
         },
-
         handleFiles = function(files) {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
@@ -97,18 +89,12 @@ var imgPrev = (function() {
                 }
                 fileList.push(file); // pushing current file into global file array
                 var fileIndex = fileList.length - 1;
-                addNameWithCloseButton(fileIndex, file.name);
                 addPreview(fileIndex, file);
-                var closeButton = document.querySelector("[data-close='" + fileIndex + "']");
-                closeButton.addEventListener('click', function(e) {
-                    deleteFileAndNamesFromQueue(fileIndex, e.target);
-                })
             }
         }
     return {
         init: function(elements) {
             initDropbox(elements.dropbox);
-            initNameList(elements.nameList)
             initPreview(elements.preview);
             if (elements.button && elements.input) {
                 try {
@@ -135,21 +121,18 @@ var imgPrev = (function() {
             return makeFileArray();
         }
     }
-
 })()
-
 
 window.onload = function() {
     imgPrev.init({
         "input": document.getElementById("file"),
         "button": document.getElementById("choose"),
         "dropbox": document.getElementById("dropb"),
-        "preview": document.getElementById("prev"),
-        "nameList": document.getElementById("name-list")
+        "preview": document.getElementById("prev")
     });
     document.getElementById("test").addEventListener("click", function() {
         alert("See browser console.")
-        console.log(imgPrev.getFilesArray())
+        console.info("Files: ", imgPrev.getFilesArray())
     }, false)
 
 }

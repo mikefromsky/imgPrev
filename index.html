@@ -11,24 +11,32 @@
 	}
 	#dropb{
 		background-color: #eee;
-		/*width: 200px;*/
 		height: 100px;
 		text-align: center;
 	}
+	.label{
+		margin:10px;
+	}
+	.close-preview{
+		cursor: pointer;
+
+	}
+	form div{
+		margin: 5px 0 5px 0
+	}
 </style>
-<script src="imgprev.js">
-	
-</script>
+<script src="imgprev.js"></script>
 <body>
 <div class="container page-header">
 	<form action="" method="post" id="fileform">
 		<input id="file" type="file" name="file" multiple accept="image/*">
 		<div id="dropb" class="thumbnail text-muted "><h4 class="center-block">Drop files here <span class="glyphicon glyphicon-file"></span> </h4></div>
-		<div id="prev"></div>
-		<div id="name-list"></div>
-	</form>
+		<div id="prev" class="form-group"></div>
+		<div class="form-group">
 	<button type="button" id="choose" class="btn btn-default">Choose Files</button>
-	<button type="button" id="test" class="btn btn-default">test</button>
+	<button type="button" id="test" class="btn btn-default">Test</button>
+	</div>
+	</form>
 	</div>
 </body>
 </html>
