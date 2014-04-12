@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+</head>
+<style>
+	input[type=file]{
+		display: none;
+	}
+	#dropb{
+		background-color: #eee;
+		/*width: 200px;*/
+		height: 100px;
+		text-align: center;
+	}
+</style>
+<script src="imgprev.js">
+	
+</script>
+<body>
+<div class="container page-header">
+	<form action="" method="post" id="fileform">
+		<input id="file" type="file" name="file" multiple accept="image/*">
+		<div id="dropb" class="thumbnail text-muted "><h4 class="center-block">Drop files here <span class="glyphicon glyphicon-file"></span> </h4></div>
+		<div id="prev"></div>
+		<div id="name-list"></div>
+	</form>
+	<button type="button" id="choose" class="btn btn-default">Choose Files</button>
+	<button type="button" id="test" class="btn btn-default">test</button>
+	</div>
+</body>
+</html>
